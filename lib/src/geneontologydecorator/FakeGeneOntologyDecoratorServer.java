@@ -2,6 +2,8 @@ package geneontologydecorator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import us.kbase.common.service.RpcContext;
@@ -54,6 +56,13 @@ public class FakeGeneOntologyDecoratorServer {
 					.withKbaseTermName(termName())
 					);
 		}
+		
+		Collections.sort(features, new Comparator<FeatureOntologyPrediction>(){
+			@Override
+			public int compare(FeatureOntologyPrediction o1, FeatureOntologyPrediction o2) {				
+				return o1.getDistance().compareTo(o2.getDistance()) * -1;
+			}			
+		});
 		return features;
 	}
 	
