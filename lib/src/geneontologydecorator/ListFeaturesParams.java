@@ -19,12 +19,15 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Generated("com.googlecode.jsonschema2pojo")
 @JsonPropertyOrder({
-    "genome_ref"
+    "genome_ref",
+    "genome_guid"
 })
 public class ListFeaturesParams {
 
     @JsonProperty("genome_ref")
     private String genomeRef;
+    @JsonProperty("genome_guid")
+    private String genomeGuid;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     @JsonProperty("genome_ref")
@@ -42,6 +45,21 @@ public class ListFeaturesParams {
         return this;
     }
 
+    @JsonProperty("genome_guid")
+    public String getGenomeGuid() {
+        return genomeGuid;
+    }
+
+    @JsonProperty("genome_guid")
+    public void setGenomeGuid(String genomeGuid) {
+        this.genomeGuid = genomeGuid;
+    }
+
+    public ListFeaturesParams withGenomeGuid(String genomeGuid) {
+        this.genomeGuid = genomeGuid;
+        return this;
+    }
+
     @JsonAnyGetter
     public Map<String, Object> getAdditionalProperties() {
         return this.additionalProperties;
@@ -54,7 +72,7 @@ public class ListFeaturesParams {
 
     @Override
     public String toString() {
-        return ((((("ListFeaturesParams"+" [genomeRef=")+ genomeRef)+", additionalProperties=")+ additionalProperties)+"]");
+        return ((((((("ListFeaturesParams"+" [genomeRef=")+ genomeRef)+", genomeGuid=")+ genomeGuid)+", additionalProperties=")+ additionalProperties)+"]");
     }
 
 }

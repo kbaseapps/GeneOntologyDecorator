@@ -119,7 +119,8 @@ sub new
 =begin html
 
 <pre>
-$return is a reference to a list where each element is a string
+$return is a reference to a list where each element is a GeneOntologyDecorator.term_relation_type
+term_relation_type is a string
 
 </pre>
 
@@ -127,7 +128,8 @@ $return is a reference to a list where each element is a string
 
 =begin text
 
-$return is a reference to a list where each element is a string
+$return is a reference to a list where each element is a GeneOntologyDecorator.term_relation_type
+term_relation_type is a string
 
 
 =end text
@@ -177,6 +179,83 @@ $return is a reference to a list where each element is a string
  
 
 
+=head2 getTopTermCategories
+
+  $return = $obj->getTopTermCategories()
+
+=over 4
+
+=item Parameter and return types
+
+=begin html
+
+<pre>
+$return is a reference to a list where each element is a GeneOntologyDecorator.TermCategory
+TermCategory is a reference to a hash where the following keys are defined:
+	category_name has a value which is a string
+	position_from has a value which is a float
+	position_to has a value which is a float
+
+</pre>
+
+=end html
+
+=begin text
+
+$return is a reference to a list where each element is a GeneOntologyDecorator.TermCategory
+TermCategory is a reference to a hash where the following keys are defined:
+	category_name has a value which is a string
+	position_from has a value which is a float
+	position_to has a value which is a float
+
+
+=end text
+
+=item Description
+
+
+
+=back
+
+=cut
+
+ sub getTopTermCategories
+{
+    my($self, @args) = @_;
+
+# Authentication: none
+
+    if ((my $n = @args) != 0)
+    {
+	Bio::KBase::Exceptions::ArgumentValidationError->throw(error =>
+							       "Invalid argument count for function getTopTermCategories (received $n, expecting 0)");
+    }
+
+    my $url = $self->{url};
+    my $result = $self->{client}->call($url, $self->{headers}, {
+	    method => "GeneOntologyDecorator.getTopTermCategories",
+	    params => \@args,
+    });
+    if ($result) {
+	if ($result->is_error) {
+	    Bio::KBase::Exceptions::JSONRPC->throw(error => $result->error_message,
+					       code => $result->content->{error}->{code},
+					       method_name => 'getTopTermCategories',
+					       data => $result->content->{error}->{error} # JSON::RPC::ReturnObject only supports JSONRPC 1.1 or 1.O
+					      );
+	} else {
+	    return wantarray ? @{$result->result} : $result->result->[0];
+	}
+    } else {
+        Bio::KBase::Exceptions::HTTP->throw(error => "Error invoking method getTopTermCategories",
+					    status_line => $self->{client}->status_line,
+					    method_name => 'getTopTermCategories',
+				       );
+    }
+}
+ 
+
+
 =head2 getTermRelations
 
   $return = $obj->getTermRelations($params)
@@ -189,14 +268,18 @@ $return is a reference to a list where each element is a string
 
 <pre>
 $params is a GeneOntologyDecorator.GetTermRelationsParams
-$return is a reference to a list where each element is a GeneOntologyDecorator.TermRelation
+$return is a reference to a hash where the key is a GeneOntologyDecorator.term_relation_type and the value is a GeneOntologyDecorator.TermProfile
 GetTermRelationsParams is a reference to a hash where the following keys are defined:
-	feature_id has a value which is a string
-TermRelation is a reference to a hash where the following keys are defined:
-	relation_type has a value which is a string
-	term_position has a value which is a float
-	term_id has a value which is a string
+	feature_guid has a value which is a string
+term_relation_type is a string
+TermProfile is a reference to a hash where the following keys are defined:
+	best_term has a value which is a GeneOntologyDecorator.Term
+	terms has a value which is a reference to a list where each element is a GeneOntologyDecorator.Term
+Term is a reference to a hash where the following keys are defined:
+	term_guid has a value which is a string
 	term_name has a value which is a string
+	term_position has a value which is a float
+	pvalue has a value which is a float
 
 </pre>
 
@@ -205,14 +288,18 @@ TermRelation is a reference to a hash where the following keys are defined:
 =begin text
 
 $params is a GeneOntologyDecorator.GetTermRelationsParams
-$return is a reference to a list where each element is a GeneOntologyDecorator.TermRelation
+$return is a reference to a hash where the key is a GeneOntologyDecorator.term_relation_type and the value is a GeneOntologyDecorator.TermProfile
 GetTermRelationsParams is a reference to a hash where the following keys are defined:
-	feature_id has a value which is a string
-TermRelation is a reference to a hash where the following keys are defined:
-	relation_type has a value which is a string
-	term_position has a value which is a float
-	term_id has a value which is a string
+	feature_guid has a value which is a string
+term_relation_type is a string
+TermProfile is a reference to a hash where the following keys are defined:
+	best_term has a value which is a GeneOntologyDecorator.Term
+	terms has a value which is a reference to a list where each element is a GeneOntologyDecorator.Term
+Term is a reference to a hash where the following keys are defined:
+	term_guid has a value which is a string
 	term_name has a value which is a string
+	term_position has a value which is a float
+	pvalue has a value which is a float
 
 
 =end text
@@ -288,14 +375,15 @@ $params is a GeneOntologyDecorator.ListFeaturesParams
 $return is a reference to a list where each element is a GeneOntologyDecorator.FeatureOntologyPrediction
 ListFeaturesParams is a reference to a hash where the following keys are defined:
 	genome_ref has a value which is a string
+	genome_guid has a value which is a string
 FeatureOntologyPrediction is a reference to a hash where the following keys are defined:
-	feature_id has a value which is a string
+	feature_guid has a value which is a string
 	feature_name has a value which is a string
 	distance has a value which is a float
-	community_term_name has a value which is a string
-	community_term_id has a value which is a string
+	reference_term_name has a value which is a string
+	reference_term_guid has a value which is a string
 	kbase_term_name has a value which is a string
-	kbase_term_id has a value which is a string
+	kbase_term_guid has a value which is a string
 
 </pre>
 
@@ -307,14 +395,15 @@ $params is a GeneOntologyDecorator.ListFeaturesParams
 $return is a reference to a list where each element is a GeneOntologyDecorator.FeatureOntologyPrediction
 ListFeaturesParams is a reference to a hash where the following keys are defined:
 	genome_ref has a value which is a string
+	genome_guid has a value which is a string
 FeatureOntologyPrediction is a reference to a hash where the following keys are defined:
-	feature_id has a value which is a string
+	feature_guid has a value which is a string
 	feature_name has a value which is a string
 	distance has a value which is a float
-	community_term_name has a value which is a string
-	community_term_id has a value which is a string
+	reference_term_name has a value which is a string
+	reference_term_guid has a value which is a string
 	kbase_term_name has a value which is a string
-	kbase_term_id has a value which is a string
+	kbase_term_guid has a value which is a string
 
 
 =end text
@@ -462,6 +551,134 @@ sub _validate_version {
 
 
 
+=head2 term_relation_type
+
+=over 4
+
+
+
+=item Definition
+
+=begin html
+
+<pre>
+a string
+</pre>
+
+=end html
+
+=begin text
+
+a string
+
+=end text
+
+=back
+
+
+
+=head2 TermCategory
+
+=over 4
+
+
+
+=item Definition
+
+=begin html
+
+<pre>
+a reference to a hash where the following keys are defined:
+category_name has a value which is a string
+position_from has a value which is a float
+position_to has a value which is a float
+
+</pre>
+
+=end html
+
+=begin text
+
+a reference to a hash where the following keys are defined:
+category_name has a value which is a string
+position_from has a value which is a float
+position_to has a value which is a float
+
+
+=end text
+
+=back
+
+
+
+=head2 Term
+
+=over 4
+
+
+
+=item Definition
+
+=begin html
+
+<pre>
+a reference to a hash where the following keys are defined:
+term_guid has a value which is a string
+term_name has a value which is a string
+term_position has a value which is a float
+pvalue has a value which is a float
+
+</pre>
+
+=end html
+
+=begin text
+
+a reference to a hash where the following keys are defined:
+term_guid has a value which is a string
+term_name has a value which is a string
+term_position has a value which is a float
+pvalue has a value which is a float
+
+
+=end text
+
+=back
+
+
+
+=head2 TermProfile
+
+=over 4
+
+
+
+=item Definition
+
+=begin html
+
+<pre>
+a reference to a hash where the following keys are defined:
+best_term has a value which is a GeneOntologyDecorator.Term
+terms has a value which is a reference to a list where each element is a GeneOntologyDecorator.Term
+
+</pre>
+
+=end html
+
+=begin text
+
+a reference to a hash where the following keys are defined:
+best_term has a value which is a GeneOntologyDecorator.Term
+terms has a value which is a reference to a list where each element is a GeneOntologyDecorator.Term
+
+
+=end text
+
+=back
+
+
+
 =head2 GetTermRelationsParams
 
 =over 4
@@ -474,7 +691,7 @@ sub _validate_version {
 
 <pre>
 a reference to a hash where the following keys are defined:
-feature_id has a value which is a string
+feature_guid has a value which is a string
 
 </pre>
 
@@ -483,43 +700,7 @@ feature_id has a value which is a string
 =begin text
 
 a reference to a hash where the following keys are defined:
-feature_id has a value which is a string
-
-
-=end text
-
-=back
-
-
-
-=head2 TermRelation
-
-=over 4
-
-
-
-=item Definition
-
-=begin html
-
-<pre>
-a reference to a hash where the following keys are defined:
-relation_type has a value which is a string
-term_position has a value which is a float
-term_id has a value which is a string
-term_name has a value which is a string
-
-</pre>
-
-=end html
-
-=begin text
-
-a reference to a hash where the following keys are defined:
-relation_type has a value which is a string
-term_position has a value which is a float
-term_id has a value which is a string
-term_name has a value which is a string
+feature_guid has a value which is a string
 
 
 =end text
@@ -541,6 +722,7 @@ term_name has a value which is a string
 <pre>
 a reference to a hash where the following keys are defined:
 genome_ref has a value which is a string
+genome_guid has a value which is a string
 
 </pre>
 
@@ -550,6 +732,7 @@ genome_ref has a value which is a string
 
 a reference to a hash where the following keys are defined:
 genome_ref has a value which is a string
+genome_guid has a value which is a string
 
 
 =end text
@@ -570,13 +753,13 @@ genome_ref has a value which is a string
 
 <pre>
 a reference to a hash where the following keys are defined:
-feature_id has a value which is a string
+feature_guid has a value which is a string
 feature_name has a value which is a string
 distance has a value which is a float
-community_term_name has a value which is a string
-community_term_id has a value which is a string
+reference_term_name has a value which is a string
+reference_term_guid has a value which is a string
 kbase_term_name has a value which is a string
-kbase_term_id has a value which is a string
+kbase_term_guid has a value which is a string
 
 </pre>
 
@@ -585,13 +768,13 @@ kbase_term_id has a value which is a string
 =begin text
 
 a reference to a hash where the following keys are defined:
-feature_id has a value which is a string
+feature_guid has a value which is a string
 feature_name has a value which is a string
 distance has a value which is a float
-community_term_name has a value which is a string
-community_term_id has a value which is a string
+reference_term_name has a value which is a string
+reference_term_guid has a value which is a string
 kbase_term_name has a value which is a string
-kbase_term_id has a value which is a string
+kbase_term_guid has a value which is a string
 
 
 =end text

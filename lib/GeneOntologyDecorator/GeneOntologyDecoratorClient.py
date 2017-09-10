@@ -35,20 +35,34 @@ class GeneOntologyDecorator(object):
 
     def getTermRelationTypes(self, context=None):
         """
-        :returns: instance of list of String
+        :returns: instance of list of type "term_relation_type"
         """
         return self._client.call_method(
             'GeneOntologyDecorator.getTermRelationTypes',
             [], self._service_ver, context)
 
+    def getTopTermCategories(self, context=None):
+        """
+        :returns: instance of list of type "TermCategory" -> structure:
+           parameter "category_name" of String, parameter "position_from" of
+           Double, parameter "position_to" of Double
+        """
+        return self._client.call_method(
+            'GeneOntologyDecorator.getTopTermCategories',
+            [], self._service_ver, context)
+
     def getTermRelations(self, params, context=None):
         """
         :param params: instance of type "GetTermRelationsParams" ->
-           structure: parameter "feature_id" of String
-        :returns: instance of list of type "TermRelation" -> structure:
-           parameter "relation_type" of String, parameter "term_position" of
-           Double, parameter "term_id" of String, parameter "term_name" of
-           String
+           structure: parameter "feature_guid" of String
+        :returns: instance of mapping from type "term_relation_type" to type
+           "TermProfile" -> structure: parameter "best_term" of type "Term"
+           -> structure: parameter "term_guid" of String, parameter
+           "term_name" of String, parameter "term_position" of Double,
+           parameter "pvalue" of Double, parameter "terms" of list of type
+           "Term" -> structure: parameter "term_guid" of String, parameter
+           "term_name" of String, parameter "term_position" of Double,
+           parameter "pvalue" of Double
         """
         return self._client.call_method(
             'GeneOntologyDecorator.getTermRelations',
@@ -57,13 +71,13 @@ class GeneOntologyDecorator(object):
     def listFeatures(self, params, context=None):
         """
         :param params: instance of type "ListFeaturesParams" -> structure:
-           parameter "genome_ref" of String
+           parameter "genome_ref" of String, parameter "genome_guid" of String
         :returns: instance of list of type "FeatureOntologyPrediction" ->
-           structure: parameter "feature_id" of String, parameter
+           structure: parameter "feature_guid" of String, parameter
            "feature_name" of String, parameter "distance" of Double,
-           parameter "community_term_name" of String, parameter
-           "community_term_id" of String, parameter "kbase_term_name" of
-           String, parameter "kbase_term_id" of String
+           parameter "reference_term_name" of String, parameter
+           "reference_term_guid" of String, parameter "kbase_term_name" of
+           String, parameter "kbase_term_guid" of String
         """
         return self._client.call_method(
             'GeneOntologyDecorator.listFeatures',
