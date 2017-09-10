@@ -19,44 +19,44 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Generated("com.googlecode.jsonschema2pojo")
 @JsonPropertyOrder({
-    "feature_id",
+    "feature_guid",
     "feature_name",
     "distance",
-    "community_term_name",
-    "community_term_id",
+    "reference_term_name",
+    "reference_term_guid",
     "kbase_term_name",
-    "kbase_term_id"
+    "kbase_term_guid"
 })
 public class FeatureOntologyPrediction {
 
-    @JsonProperty("feature_id")
-    private String featureId;
+    @JsonProperty("feature_guid")
+    private String featureGuid;
     @JsonProperty("feature_name")
     private String featureName;
     @JsonProperty("distance")
     private Double distance;
-    @JsonProperty("community_term_name")
-    private String communityTermName;
-    @JsonProperty("community_term_id")
-    private String communityTermId;
+    @JsonProperty("reference_term_name")
+    private String referenceTermName;
+    @JsonProperty("reference_term_guid")
+    private String referenceTermGuid;
     @JsonProperty("kbase_term_name")
     private String kbaseTermName;
-    @JsonProperty("kbase_term_id")
-    private String kbaseTermId;
+    @JsonProperty("kbase_term_guid")
+    private String kbaseTermGuid;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    @JsonProperty("feature_id")
-    public String getFeatureId() {
-        return featureId;
+    @JsonProperty("feature_guid")
+    public String getFeatureGuid() {
+        return featureGuid;
     }
 
-    @JsonProperty("feature_id")
-    public void setFeatureId(String featureId) {
-        this.featureId = featureId;
+    @JsonProperty("feature_guid")
+    public void setFeatureGuid(String featureGuid) {
+        this.featureGuid = featureGuid;
     }
 
-    public FeatureOntologyPrediction withFeatureId(String featureId) {
-        this.featureId = featureId;
+    public FeatureOntologyPrediction withFeatureGuid(String featureGuid) {
+        this.featureGuid = featureGuid;
         return this;
     }
 
@@ -90,33 +90,33 @@ public class FeatureOntologyPrediction {
         return this;
     }
 
-    @JsonProperty("community_term_name")
-    public String getCommunityTermName() {
-        return communityTermName;
+    @JsonProperty("reference_term_name")
+    public String getReferenceTermName() {
+        return referenceTermName;
     }
 
-    @JsonProperty("community_term_name")
-    public void setCommunityTermName(String communityTermName) {
-        this.communityTermName = communityTermName;
+    @JsonProperty("reference_term_name")
+    public void setReferenceTermName(String referenceTermName) {
+        this.referenceTermName = referenceTermName;
     }
 
-    public FeatureOntologyPrediction withCommunityTermName(String communityTermName) {
-        this.communityTermName = communityTermName;
+    public FeatureOntologyPrediction withReferenceTermName(String referenceTermName) {
+        this.referenceTermName = referenceTermName;
         return this;
     }
 
-    @JsonProperty("community_term_id")
-    public String getCommunityTermId() {
-        return communityTermId;
+    @JsonProperty("reference_term_guid")
+    public String getReferenceTermGuid() {
+        return referenceTermGuid;
     }
 
-    @JsonProperty("community_term_id")
-    public void setCommunityTermId(String communityTermId) {
-        this.communityTermId = communityTermId;
+    @JsonProperty("reference_term_guid")
+    public void setReferenceTermGuid(String referenceTermGuid) {
+        this.referenceTermGuid = referenceTermGuid;
     }
 
-    public FeatureOntologyPrediction withCommunityTermId(String communityTermId) {
-        this.communityTermId = communityTermId;
+    public FeatureOntologyPrediction withReferenceTermGuid(String referenceTermGuid) {
+        this.referenceTermGuid = referenceTermGuid;
         return this;
     }
 
@@ -135,18 +135,18 @@ public class FeatureOntologyPrediction {
         return this;
     }
 
-    @JsonProperty("kbase_term_id")
-    public String getKbaseTermId() {
-        return kbaseTermId;
+    @JsonProperty("kbase_term_guid")
+    public String getKbaseTermGuid() {
+        return kbaseTermGuid;
     }
 
-    @JsonProperty("kbase_term_id")
-    public void setKbaseTermId(String kbaseTermId) {
-        this.kbaseTermId = kbaseTermId;
+    @JsonProperty("kbase_term_guid")
+    public void setKbaseTermGuid(String kbaseTermGuid) {
+        this.kbaseTermGuid = kbaseTermGuid;
     }
 
-    public FeatureOntologyPrediction withKbaseTermId(String kbaseTermId) {
-        this.kbaseTermId = kbaseTermId;
+    public FeatureOntologyPrediction withKbaseTermGuid(String kbaseTermGuid) {
+        this.kbaseTermGuid = kbaseTermGuid;
         return this;
     }
 
@@ -162,7 +162,7 @@ public class FeatureOntologyPrediction {
 
     @Override
     public String toString() {
-        return ((((((((((((((((("FeatureOntologyPrediction"+" [featureId=")+ featureId)+", featureName=")+ featureName)+", distance=")+ distance)+", communityTermName=")+ communityTermName)+", communityTermId=")+ communityTermId)+", kbaseTermName=")+ kbaseTermName)+", kbaseTermId=")+ kbaseTermId)+", additionalProperties=")+ additionalProperties)+"]");
+        return ((((((((((((((((("FeatureOntologyPrediction"+" [featureGuid=")+ featureGuid)+", featureName=")+ featureName)+", distance=")+ distance)+", referenceTermName=")+ referenceTermName)+", referenceTermGuid=")+ referenceTermGuid)+", kbaseTermName=")+ kbaseTermName)+", kbaseTermGuid=")+ kbaseTermGuid)+", additionalProperties=")+ additionalProperties)+"]");
     }
 
 }

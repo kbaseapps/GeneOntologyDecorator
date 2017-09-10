@@ -23,7 +23,7 @@ public class GeneOntologyDecoratorServer extends JsonServerServlet {
     private static final long serialVersionUID = 1L;
     private static final String version = "0.0.1";
     private static final String gitUrl = "https://github.com/psnovichkov/GeneOntologyDecorator.git";
-    private static final String gitCommitHash = "ee328d10eacdcb9b89b8c7691e9872f88491765f";
+    private static final String gitCommitHash = "054b74f6b648317bd4c7421e8436475538775cf6";
 
     //BEGIN_CLASS_HEADER
     FakeGeneOntologyDecoratorServer impl = new FakeGeneOntologyDecoratorServer();
@@ -39,14 +39,29 @@ public class GeneOntologyDecoratorServer extends JsonServerServlet {
      * <p>Original spec-file function name: getTermRelationTypes</p>
      * <pre>
      * </pre>
-     * @return   instance of list of String
+     * @return   instance of list of original type "term_relation_type"
      */
     @JsonServerMethod(rpc = "GeneOntologyDecorator.getTermRelationTypes", async=true)
     public List<String> getTermRelationTypes(RpcContext jsonRpcContext) throws Exception {
         List<String> returnVal = null;
         //BEGIN getTermRelationTypes
-        returnVal = impl.getTermRelationTypes(jsonRpcContext);
+        returnVal = impl.getTermRelationTypes();
         //END getTermRelationTypes
+        return returnVal;
+    }
+
+    /**
+     * <p>Original spec-file function name: getTopTermCategories</p>
+     * <pre>
+     * </pre>
+     * @return   instance of list of type {@link geneontologydecorator.TermCategory TermCategory}
+     */
+    @JsonServerMethod(rpc = "GeneOntologyDecorator.getTopTermCategories", async=true)
+    public List<TermCategory> getTopTermCategories(RpcContext jsonRpcContext) throws Exception {
+        List<TermCategory> returnVal = null;
+        //BEGIN getTopTermCategories
+        returnVal = impl.getTopTermCategories();        
+        //END getTopTermCategories
         return returnVal;
     }
 
@@ -55,13 +70,13 @@ public class GeneOntologyDecoratorServer extends JsonServerServlet {
      * <pre>
      * </pre>
      * @param   params   instance of type {@link geneontologydecorator.GetTermRelationsParams GetTermRelationsParams}
-     * @return   instance of list of type {@link geneontologydecorator.TermRelation TermRelation}
+     * @return   instance of mapping from original type "term_relation_type" to type {@link geneontologydecorator.TermProfile TermProfile}
      */
     @JsonServerMethod(rpc = "GeneOntologyDecorator.getTermRelations", async=true)
-    public List<TermRelation> getTermRelations(GetTermRelationsParams params, AuthToken authPart, RpcContext jsonRpcContext) throws Exception {
-        List<TermRelation> returnVal = null;
+    public Map<String,TermProfile> getTermRelations(GetTermRelationsParams params, AuthToken authPart, RpcContext jsonRpcContext) throws Exception {
+        Map<String,TermProfile> returnVal = null;
         //BEGIN getTermRelations
-        returnVal = impl.getTermRelations(params, jsonRpcContext);
+        returnVal = impl.getTermRelations(params);
         //END getTermRelations
         return returnVal;
     }
@@ -77,7 +92,7 @@ public class GeneOntologyDecoratorServer extends JsonServerServlet {
     public List<FeatureOntologyPrediction> listFeatures(ListFeaturesParams params, AuthToken authPart, RpcContext jsonRpcContext) throws Exception {
         List<FeatureOntologyPrediction> returnVal = null;
         //BEGIN listFeatures
-        returnVal = impl.listFeatures(params, jsonRpcContext);
+        returnVal = impl.listFeatures(params);
         //END listFeatures
         return returnVal;
     }

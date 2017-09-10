@@ -19,26 +19,26 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Generated("com.googlecode.jsonschema2pojo")
 @JsonPropertyOrder({
-    "feature_id"
+    "feature_guid"
 })
 public class GetTermRelationsParams {
 
-    @JsonProperty("feature_id")
-    private String featureId;
+    @JsonProperty("feature_guid")
+    private String featureGuid;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    @JsonProperty("feature_id")
-    public String getFeatureId() {
-        return featureId;
+    @JsonProperty("feature_guid")
+    public String getFeatureGuid() {
+        return featureGuid;
     }
 
-    @JsonProperty("feature_id")
-    public void setFeatureId(String featureId) {
-        this.featureId = featureId;
+    @JsonProperty("feature_guid")
+    public void setFeatureGuid(String featureGuid) {
+        this.featureGuid = featureGuid;
     }
 
-    public GetTermRelationsParams withFeatureId(String featureId) {
-        this.featureId = featureId;
+    public GetTermRelationsParams withFeatureGuid(String featureGuid) {
+        this.featureGuid = featureGuid;
         return this;
     }
 
@@ -54,7 +54,7 @@ public class GetTermRelationsParams {
 
     @Override
     public String toString() {
-        return ((((("GetTermRelationsParams"+" [featureId=")+ featureId)+", additionalProperties=")+ additionalProperties)+"]");
+        return ((((("GetTermRelationsParams"+" [featureGuid=")+ featureGuid)+", additionalProperties=")+ additionalProperties)+"]");
     }
 
 }

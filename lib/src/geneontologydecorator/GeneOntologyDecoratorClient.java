@@ -166,7 +166,7 @@ public class GeneOntologyDecoratorClient {
      * <p>Original spec-file function name: getTermRelationTypes</p>
      * <pre>
      * </pre>
-     * @return   instance of list of String
+     * @return   instance of list of original type "term_relation_type"
      * @throws IOException if an IO exception occurs
      * @throws JsonClientException if a JSON RPC exception occurs
      */
@@ -178,19 +178,34 @@ public class GeneOntologyDecoratorClient {
     }
 
     /**
+     * <p>Original spec-file function name: getTopTermCategories</p>
+     * <pre>
+     * </pre>
+     * @return   instance of list of type {@link geneontologydecorator.TermCategory TermCategory}
+     * @throws IOException if an IO exception occurs
+     * @throws JsonClientException if a JSON RPC exception occurs
+     */
+    public List<TermCategory> getTopTermCategories(RpcContext... jsonRpcContext) throws IOException, JsonClientException {
+        List<Object> args = new ArrayList<Object>();
+        TypeReference<List<List<TermCategory>>> retType = new TypeReference<List<List<TermCategory>>>() {};
+        List<List<TermCategory>> res = caller.jsonrpcCall("GeneOntologyDecorator.getTopTermCategories", args, retType, true, false, jsonRpcContext, this.serviceVersion);
+        return res.get(0);
+    }
+
+    /**
      * <p>Original spec-file function name: getTermRelations</p>
      * <pre>
      * </pre>
      * @param   params   instance of type {@link geneontologydecorator.GetTermRelationsParams GetTermRelationsParams}
-     * @return   instance of list of type {@link geneontologydecorator.TermRelation TermRelation}
+     * @return   instance of mapping from original type "term_relation_type" to type {@link geneontologydecorator.TermProfile TermProfile}
      * @throws IOException if an IO exception occurs
      * @throws JsonClientException if a JSON RPC exception occurs
      */
-    public List<TermRelation> getTermRelations(GetTermRelationsParams params, RpcContext... jsonRpcContext) throws IOException, JsonClientException {
+    public Map<String,TermProfile> getTermRelations(GetTermRelationsParams params, RpcContext... jsonRpcContext) throws IOException, JsonClientException {
         List<Object> args = new ArrayList<Object>();
         args.add(params);
-        TypeReference<List<List<TermRelation>>> retType = new TypeReference<List<List<TermRelation>>>() {};
-        List<List<TermRelation>> res = caller.jsonrpcCall("GeneOntologyDecorator.getTermRelations", args, retType, true, true, jsonRpcContext, this.serviceVersion);
+        TypeReference<List<Map<String,TermProfile>>> retType = new TypeReference<List<Map<String,TermProfile>>>() {};
+        List<Map<String,TermProfile>> res = caller.jsonrpcCall("GeneOntologyDecorator.getTermRelations", args, retType, true, true, jsonRpcContext, this.serviceVersion);
         return res.get(0);
     }
 
