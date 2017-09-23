@@ -8,7 +8,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-public class FakeGeneOntologyDecoratorServer {
+public class FakeGeneOntologyDecoratorServer implements IGeneOntologyDecoratorImpl {
 
 	private static int MAX_TERMS_NUMBER = 7;
 	private static final String[][] termCategories = new String[][]{
@@ -34,10 +34,12 @@ public class FakeGeneOntologyDecoratorServer {
 	private static final int FEATURE_COUNT = 4586;
 	
 	
+    @Override
 	public List<String> getTermRelationTypes() {
 		return termRelationTypes;
 	}
 
+    @Override
 	public Map<String,TermProfile> getTermRelations(GetTermRelationsParams params) {
 		Map<String,TermProfile> termRelations = new Hashtable<String,TermProfile>();
 		for(String relationType: termRelationTypes){
@@ -69,6 +71,7 @@ public class FakeGeneOntologyDecoratorServer {
 		return "" + rndDigit() + rndDigit() + rndDigit() + rndDigit();
 	}
 
+    @Override
 	public List<FeatureOntologyPrediction> listFeatures(ListFeaturesParams params) {
 		List<FeatureOntologyPrediction> features = new ArrayList<FeatureOntologyPrediction>(FEATURE_COUNT);
 		for(int i = 0; i < FEATURE_COUNT; i++){
@@ -114,6 +117,7 @@ public class FakeGeneOntologyDecoratorServer {
 		return rndLetter() + rndLetter() + rndLetter() + rndLetter().toUpperCase();
 	}	
 	
+    @Override
 	public List<TermCategory> getTopTermCategories() {		
 		List<TermCategory> categories = new ArrayList<TermCategory>(termCategories.length);
 		for(String[] vals: termCategories){

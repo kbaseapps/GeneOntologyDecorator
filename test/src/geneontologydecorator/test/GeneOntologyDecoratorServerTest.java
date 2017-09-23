@@ -5,6 +5,7 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -15,7 +16,11 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import geneontologydecorator.FeatureOntologyPrediction;
 import geneontologydecorator.GeneOntologyDecoratorServer;
+import geneontologydecorator.GetTermRelationsParams;
+import geneontologydecorator.ListFeaturesParams;
+import geneontologydecorator.TermProfile;
 import us.kbase.auth.AuthConfig;
 import us.kbase.auth.AuthToken;
 import us.kbase.auth.ConfigurableAuthService;
@@ -90,15 +95,17 @@ public class GeneOntologyDecoratorServerTest {
     }
     
     @Test
-    public void testYourMethod() throws Exception {
-        // Prepare test data using the appropriate uploader for that method (see the KBase function
-        // catalog for help, https://narrative.kbase.us/#catalog/functions)
-        //
-        // Run your method by
-        // YourRetType ret = impl.yourMethod(params, token);
-        //
-        // Check returned data with
-        // Assert.assertEquals(..., ret.getSomeProperty());
-        // ... or other JUnit methods.
+    public void testFeatureListAndBadges() throws Exception {
+        String inputGenomeRef = "25582/31/1";
+        // Feature list
+        List<FeatureOntologyPrediction> ret = impl.listFeatures(
+                new ListFeaturesParams().withGenomeRef(inputGenomeRef), token, null);
+        System.out.println("Feature list size: " + ret.size());
+        System.out.println("First item: " + ret.get(0));
+        String featureGuid = ret.get(0).getFeatureGuid();
+        // Badge
+        Map<String, TermProfile> profiles = impl.getTermRelations(new GetTermRelationsParams()
+                .withFeatureGuid(featureGuid), token, null);
+        System.out.println("Badge: " + profiles);
     }
 }
