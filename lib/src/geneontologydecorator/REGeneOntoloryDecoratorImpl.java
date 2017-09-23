@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,7 +74,7 @@ public class REGeneOntoloryDecoratorImpl implements IGeneOntologyDecoratorImpl {
                         .withKeappGuids(keappGuids));
         Map<String, TermProfile> ret = new HashMap<>();
         Term refTerm = new Term().withTermGuid(output.getRefTermGuid())
-                .withTermName(output.getRefTermName());
+                .withTermName(output.getRefTermName()).withPvalue(1.0).withTermPosition(0.0);
         ret.put("reference", new TermProfile().withBestTerm(refTerm)
                 .withTerms(Arrays.asList(refTerm)));
         Map<String, String> appToTermRelType = termRelationAppTypes.stream().collect(
@@ -162,7 +164,8 @@ public class REGeneOntoloryDecoratorImpl implements IGeneOntologyDecoratorImpl {
                     .withReferenceTermGuid(pair.getRefTermGuid())
                     .withReferenceTermName(pair.getRefTermName())
                     .withKbaseTermGuid(pair.getTargetTermGuid())
-                    .withKbaseTermName(pair.getTargetTermName());
+                    .withKbaseTermName(pair.getTargetTermName())
+                    .withDistance(Double.POSITIVE_INFINITY);
             ret.add(fop);
             if (pair.getRefTermGuid() != null && pair.getTargetTermGuid() != null) {
                 String termPairKey = pair.getRefTermGuid() + "_" + pair.getTargetTermGuid();
@@ -182,6 +185,13 @@ public class REGeneOntoloryDecoratorImpl implements IGeneOntologyDecoratorImpl {
                 }
             }
         }
+        Collections.sort(ret, new Comparator<FeatureOntologyPrediction>() {
+            @Override
+            public int compare(FeatureOntologyPrediction o1,
+                    FeatureOntologyPrediction o2) {
+                return o2.getDistance().compareTo(o1.getDistance());
+            }
+        });
         return ret;
     }
 }
