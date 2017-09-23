@@ -11,6 +11,7 @@ import us.kbase.common.service.JsonServerSyslog;
 import us.kbase.common.service.RpcContext;
 
 //BEGIN_HEADER
+import java.net.URL;
 //END_HEADER
 
 /**
@@ -26,12 +27,19 @@ public class GeneOntologyDecoratorServer extends JsonServerServlet {
     private static final String gitCommitHash = "054b74f6b648317bd4c7421e8436475538775cf6";
 
     //BEGIN_CLASS_HEADER
-    FakeGeneOntologyDecoratorServer impl = new FakeGeneOntologyDecoratorServer();
+    IGeneOntologyDecoratorImpl impl = null;  //new FakeGeneOntologyDecoratorServer();
     //END_CLASS_HEADER
 
     public GeneOntologyDecoratorServer() throws Exception {
         super("GeneOntologyDecorator");
         //BEGIN_CONSTRUCTOR
+        URL srvWizUrl = new URL(config.get("srv-wiz-url"));
+        String keAdminTokenString = config.get("ke-admin-token");
+        if (keAdminTokenString == null) {
+            throw new IllegalStateException("ke-admin-token is not defined in configuration");
+        }
+        AuthToken keAdminToken = new AuthToken(keAdminTokenString, "<unknown>");
+        impl = new REGeneOntoloryDecoratorImpl(srvWizUrl, keAdminToken);
         //END_CONSTRUCTOR
     }
 
