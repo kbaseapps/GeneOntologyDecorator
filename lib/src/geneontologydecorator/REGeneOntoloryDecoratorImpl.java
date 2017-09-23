@@ -185,6 +185,7 @@ public class REGeneOntoloryDecoratorImpl implements IGeneOntologyDecoratorImpl {
                 }
             }
         }
+        ret = ret.stream().filter(item -> item.getDistance() < 100.0).collect(Collectors.toList());
         Collections.sort(ret, new Comparator<FeatureOntologyPrediction>() {
             @Override
             public int compare(FeatureOntologyPrediction o1,
