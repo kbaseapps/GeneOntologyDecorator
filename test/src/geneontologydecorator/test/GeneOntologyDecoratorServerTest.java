@@ -96,7 +96,7 @@ public class GeneOntologyDecoratorServerTest {
     
     @Test
     public void testFeatureListAndBadges() throws Exception {
-        String inputGenomeRef = "";
+        String inputGenomeRef = "25582/31/1";
         // Feature list
         List<FeatureOntologyPrediction> ret = impl.listFeatures(
                 new ListFeaturesParams().withGenomeRef(inputGenomeRef), token, null);

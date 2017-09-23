@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
 import kbaserelationengine.GetWSFeatureTermEnrichmentProfilesOutput;
 import kbaserelationengine.GetWSFeatureTermEnrichmentProfilesParams;
 import kbaserelationengine.GetWSFeatureTermPairsParams;
@@ -16,10 +18,12 @@ import kbaserelationengine.KBaseRelationEngineServiceClient;
 import kbaserelationengine.TermEnrichment;
 import kbaserelationengine.TermEnrichmentProfile;
 import kbaserelationengine.WSFeatureTermPair;
-import kbkeutil.CalcOnthologyDistOutput;
 import kbkeutil.CalcOnthologyDistParams;
 import kbkeutil.KbKeUtilServiceClient;
 import us.kbase.auth.AuthToken;
+import us.kbase.common.service.JsonClientCaller;
+import us.kbase.common.service.RpcContext;
+import us.kbase.common.service.UObject;
 import us.kbase.common.service.UnauthorizedException;
 
 public class REGeneOntoloryDecoratorImpl implements IGeneOntologyDecoratorImpl {
@@ -85,8 +89,10 @@ public class REGeneOntoloryDecoratorImpl implements IGeneOntologyDecoratorImpl {
                 Term t = new Term().withPvalue(te.getPValue())
                         .withTermGuid(te.getTermGuid()).withTermName(te.getTermName());
                 terms.add(t);
-                String termPairKey = refTerm.getTermGuid() + "_" + t.getTermGuid();
-                termPairs.put(termPairKey, Arrays.asList(refTerm.getTermGuid(), t.getTermGuid()));
+                if (refTerm.getTermGuid() != null && t.getTermGuid() != null) {
+                    String termPairKey = refTerm.getTermGuid() + "_" + t.getTermGuid();
+                    termPairs.put(termPairKey, Arrays.asList(refTerm.getTermGuid(), t.getTermGuid()));
+                }
             }
             Term bestTerm = terms.stream().min(
                     (t1, t2) -> Double.compare(t1.getPvalue(), t2.getPvalue())).get();
@@ -94,23 +100,37 @@ public class REGeneOntoloryDecoratorImpl implements IGeneOntologyDecoratorImpl {
             outProfile.withBestTerm(bestTerm).withTerms(terms);
             ret.put(termRelType, outProfile);
         }
-        Map<String, Long> termPairToDistance = calcWeightedOnthologyDist(termPairs);
-        for (TermProfile profile : ret.values()) {
-            for (Term t : profile.getTerms()) {
-                String termPairKey = refTerm.getTermGuid() + "_" + t.getTermGuid();
-                Long distance = termPairToDistance.get(termPairKey);
-                if (distance != null) {
-                    t.setTermPosition((double)(long)distance);
+        if (termPairs.size() > 0) {
+            Map<String, Double> termPairToDistance = calcWeightedOnthologyDist(termPairs);
+            for (TermProfile profile : ret.values()) {
+                for (Term t : profile.getTerms()) {
+                    if (t.getTermGuid() != null) {
+                        String termPairKey = refTerm.getTermGuid() + "_" + t.getTermGuid();
+                        Double distance = termPairToDistance.get(termPairKey);
+                        if (distance != null) {
+                            t.setTermPosition((double)distance);
+                        }
+                    }
                 }
             }
         }
         return ret;
     }
 
-    private Map<String, Long> calcWeightedOnthologyDist(
+    private Map<String, Double> calcWeightedOnthologyDist(
             Map<String, List<String>> termPairs) throws Exception {
-        CalcOnthologyDistOutput output = getKEUtil().calcWeightedOnthologyDist(
-                new CalcOnthologyDistParams().withOnthologySet(termPairs));
+        JsonClientCaller caller = new JsonClientCaller(srvWizUrl, keAdmin);
+        caller.setDynamic(true);
+        List<Object> args = new ArrayList<Object>();
+        args.add(new CalcOnthologyDistParams().withOnthologySet(termPairs));
+        TypeReference<List<Map>> retType = new TypeReference<List<Map>>() {};
+        List<Map> res = caller.jsonrpcCall("kb_ke_util.calc_weighted_onthology_dist", args, retType, true, true, (RpcContext[])null, "dev");
+        Map map = res.get(0);
+        //System.out.println("Tian: " + map);
+        /*CalcOnthologyDistOutput output = getKEUtil().calcWeightedOnthologyDist(
+                new CalcOnthologyDistParams().withOnthologySet(termPairs));*/
+        CalcWeightedOnthologyDistOutput output = UObject.transformObjectToObject(map, 
+                CalcWeightedOnthologyDistOutput.class);
         return output.getOnthologyDistSet();
     }
     
@@ -144,16 +164,22 @@ public class REGeneOntoloryDecoratorImpl implements IGeneOntologyDecoratorImpl {
                     .withKbaseTermGuid(pair.getTargetTermGuid())
                     .withKbaseTermName(pair.getTargetTermName());
             ret.add(fop);
-            String termPairKey = pair.getRefTermGuid() + "_" + pair.getTargetTermGuid();
-            termPairs.put(termPairKey, Arrays.asList(pair.getRefTermGuid(), 
-                    pair.getTargetTermGuid()));
+            if (pair.getRefTermGuid() != null && pair.getTargetTermGuid() != null) {
+                String termPairKey = pair.getRefTermGuid() + "_" + pair.getTargetTermGuid();
+                termPairs.put(termPairKey, Arrays.asList(pair.getRefTermGuid(), 
+                        pair.getTargetTermGuid()));
+            }
         }
-        Map<String, Long> termPairToDistance = calcWeightedOnthologyDist(termPairs);
-        for (FeatureOntologyPrediction fop : ret) {
-            String termPairKey = fop.getReferenceTermGuid() + "_" + fop.getKbaseTermGuid();
-            Long distance = termPairToDistance.get(termPairKey);
-            if (distance != null) {
-                fop.setDistance((double)(long)distance);
+        if (termPairs.size() > 0) {
+            Map<String, Double> termPairToDistance = calcWeightedOnthologyDist(termPairs);
+            for (FeatureOntologyPrediction fop : ret) {
+                if (fop.getReferenceTermGuid() != null && fop.getKbaseTermGuid() != null) {
+                    String termPairKey = fop.getReferenceTermGuid() + "_" + fop.getKbaseTermGuid();
+                    Double distance = termPairToDistance.get(termPairKey);
+                    if (distance != null) {
+                        fop.setDistance((double)distance);
+                    }
+                }
             }
         }
         return ret;
