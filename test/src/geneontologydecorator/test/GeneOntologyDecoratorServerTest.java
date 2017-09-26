@@ -20,6 +20,7 @@ import geneontologydecorator.FeatureOntologyPrediction;
 import geneontologydecorator.GeneOntologyDecoratorServer;
 import geneontologydecorator.GetTermRelationsParams;
 import geneontologydecorator.ListFeaturesParams;
+import geneontologydecorator.Term;
 import geneontologydecorator.TermProfile;
 import us.kbase.auth.AuthConfig;
 import us.kbase.auth.AuthToken;
@@ -107,5 +108,32 @@ public class GeneOntologyDecoratorServerTest {
         Map<String, TermProfile> profiles = impl.getTermRelations(new GetTermRelationsParams()
                 .withFeatureGuid(featureGuid), token, null);
         System.out.println("Badge: " + profiles);
+    }
+
+    @Test
+    public void testErrorBadge() throws Exception {
+        String inputGenomeRef = "26100/13/1";
+        // Feature list
+        List<FeatureOntologyPrediction> ret = impl.listFeatures(
+                new ListFeaturesParams().withGenomeRef(inputGenomeRef), token, null);
+        String featureGuid = null;
+        for (FeatureOntologyPrediction fop : ret) {
+            if (fop.getFeatureName().equals("GeneID:4476881")) {
+                featureGuid = fop.getFeatureGuid();
+                break;
+            }
+        }
+        // Badge
+        Map<String, TermProfile> profiles = impl.getTermRelations(new GetTermRelationsParams()
+                .withFeatureGuid(featureGuid), token, null);
+        for (String key : profiles.keySet()) {
+            if (key.equals("reference")) {
+                continue;
+            }
+            TermProfile tp = profiles.get(key);
+            for (Term t : tp.getTerms()) {
+                Assert.assertTrue(t.getTermPosition() < 100);
+            }
+        }
     }
 }

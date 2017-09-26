@@ -21,7 +21,6 @@ import kbaserelationengine.TermEnrichment;
 import kbaserelationengine.TermEnrichmentProfile;
 import kbaserelationengine.WSFeatureTermPair;
 import kbkeutil.CalcOnthologyDistParams;
-import kbkeutil.KbKeUtilServiceClient;
 import us.kbase.auth.AuthToken;
 import us.kbase.common.service.JsonClientCaller;
 import us.kbase.common.service.RpcContext;
@@ -54,13 +53,6 @@ public class REGeneOntoloryDecoratorImpl implements IGeneOntologyDecoratorImpl {
         return ret;
     }
 
-    private KbKeUtilServiceClient getKEUtil() throws UnauthorizedException, IOException {
-        KbKeUtilServiceClient ret = new KbKeUtilServiceClient(srvWizUrl, keAdmin);
-        ret.setIsInsecureHttpConnectionAllowed(true);
-        ret.setServiceVersion("dev");
-        return ret;
-    }
-
     @Override
     public Map<String, TermProfile> getTermRelations(
             GetTermRelationsParams params) throws Exception {
@@ -75,7 +67,8 @@ public class REGeneOntoloryDecoratorImpl implements IGeneOntologyDecoratorImpl {
         Map<String, TermProfile> ret = new HashMap<>();
         Term refTerm = new Term().withTermGuid(output.getRefTermGuid())
                 .withTermName(output.getRefTermName()).withPvalue(1.0).withTermPosition(0.0);
-        ret.put("reference", new TermProfile().withBestTerm(refTerm)
+        String refKey = "reference";
+        ret.put(refKey, new TermProfile().withBestTerm(refTerm)
                 .withTerms(Arrays.asList(refTerm)));
         Map<String, String> appToTermRelType = termRelationAppTypes.stream().collect(
                 Collectors.toMap(item -> item[1], item -> item[0]));
@@ -96,29 +89,50 @@ public class REGeneOntoloryDecoratorImpl implements IGeneOntologyDecoratorImpl {
                     termPairs.put(termPairKey, Arrays.asList(refTerm.getTermGuid(), t.getTermGuid()));
                 }
             }
-            Term bestTerm = terms.stream().min(
-                    (t1, t2) -> Double.compare(t1.getPvalue(), t2.getPvalue())).get();
             TermProfile outProfile = new TermProfile();
-            outProfile.withBestTerm(bestTerm).withTerms(terms);
+            outProfile.withTerms(terms);
             ret.put(termRelType, outProfile);
         }
         if (termPairs.size() > 0) {
             Map<String, Double> termPairToDistance = calcWeightedOnthologyDist(termPairs);
-            for (TermProfile profile : ret.values()) {
+            for (Map.Entry<String, TermProfile> entry : ret.entrySet()) {
+                if (entry.getKey().equals(refKey)) {
+                    continue;
+                }
+                TermProfile profile = entry.getValue();
+                List<Term> toDelete = new ArrayList<>();
                 for (Term t : profile.getTerms()) {
                     if (t.getTermGuid() != null) {
                         String termPairKey = refTerm.getTermGuid() + "_" + t.getTermGuid();
                         Double distance = termPairToDistance.get(termPairKey);
                         if (distance != null) {
-                            t.setTermPosition((double)distance);
+                            if (distance < 100) {
+                                t.setTermPosition((double)distance);
+                            } else {
+                                toDelete.add(t);
+                            }
                         }
                     }
                 }
+                if (!toDelete.isEmpty()) {
+                    ArrayList<Term> terms = new ArrayList<>(profile.getTerms());
+                    terms.removeAll(toDelete);
+                    profile.setTerms(terms);
+                }
             }
+        }
+        for (Map.Entry<String, TermProfile> entry : ret.entrySet()) {
+            if (entry.getKey().equals(refKey)) {
+                continue;
+            }
+            TermProfile profile = entry.getValue();
+            profile.setBestTerm(profile.getTerms().stream().min(
+                    (t1, t2) -> Double.compare(t1.getPvalue(), t2.getPvalue())).get());
         }
         return ret;
     }
 
+    @SuppressWarnings("rawtypes")
     private Map<String, Double> calcWeightedOnthologyDist(
             Map<String, List<String>> termPairs) throws Exception {
         JsonClientCaller caller = new JsonClientCaller(srvWizUrl, keAdmin);
@@ -126,11 +140,9 @@ public class REGeneOntoloryDecoratorImpl implements IGeneOntologyDecoratorImpl {
         List<Object> args = new ArrayList<Object>();
         args.add(new CalcOnthologyDistParams().withOnthologySet(termPairs));
         TypeReference<List<Map>> retType = new TypeReference<List<Map>>() {};
-        List<Map> res = caller.jsonrpcCall("kb_ke_util.calc_weighted_onthology_dist", args, retType, true, true, (RpcContext[])null, "dev");
+        List<Map> res = caller.jsonrpcCall("kb_ke_util.calc_weighted_onthology_dist", 
+                args, retType, true, true, (RpcContext[])null, "dev");
         Map map = res.get(0);
-        //System.out.println("Tian: " + map);
-        /*CalcOnthologyDistOutput output = getKEUtil().calcWeightedOnthologyDist(
-                new CalcOnthologyDistParams().withOnthologySet(termPairs));*/
         CalcWeightedOnthologyDistOutput output = UObject.transformObjectToObject(map, 
                 CalcWeightedOnthologyDistOutput.class);
         return output.getOnthologyDistSet();
@@ -165,7 +177,11 @@ public class REGeneOntoloryDecoratorImpl implements IGeneOntologyDecoratorImpl {
                     .withReferenceTermName(pair.getRefTermName())
                     .withKbaseTermGuid(pair.getTargetTermGuid())
                     .withKbaseTermName(pair.getTargetTermName())
-                    .withDistance(Double.POSITIVE_INFINITY);
+                    .withDistance(Double.POSITIVE_INFINITY)
+                    .withFeatureFunction(pair.getFeatureFunction())
+                    .withFeatureAliases(pair.getFeatureAliases())
+                    .withWithExpression(pair.getWithExpression())
+                    .withWithFitness(pair.getWithFitness());
             ret.add(fop);
             if (pair.getRefTermGuid() != null && pair.getTargetTermGuid() != null) {
                 String termPairKey = pair.getRefTermGuid() + "_" + pair.getTargetTermGuid();
@@ -190,7 +206,7 @@ public class REGeneOntoloryDecoratorImpl implements IGeneOntologyDecoratorImpl {
             @Override
             public int compare(FeatureOntologyPrediction o1,
                     FeatureOntologyPrediction o2) {
-                return o2.getDistance().compareTo(o1.getDistance());
+                return o1.getFeatureName().compareTo(o2.getFeatureName());
             }
         });
         return ret;

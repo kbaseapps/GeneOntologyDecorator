@@ -379,6 +379,10 @@ ListFeaturesParams is a reference to a hash where the following keys are defined
 FeatureOntologyPrediction is a reference to a hash where the following keys are defined:
 	feature_guid has a value which is a string
 	feature_name has a value which is a string
+	feature_aliases has a value which is a reference to a list where each element is a string
+	feature_function has a value which is a string
+	with_expression has a value which is an int
+	with_fitness has a value which is an int
 	distance has a value which is a float
 	reference_term_name has a value which is a string
 	reference_term_guid has a value which is a string
@@ -399,6 +403,10 @@ ListFeaturesParams is a reference to a hash where the following keys are defined
 FeatureOntologyPrediction is a reference to a hash where the following keys are defined:
 	feature_guid has a value which is a string
 	feature_name has a value which is a string
+	feature_aliases has a value which is a reference to a list where each element is a string
+	feature_function has a value which is a string
+	with_expression has a value which is an int
+	with_fitness has a value which is an int
 	distance has a value which is a float
 	reference_term_name has a value which is a string
 	reference_term_guid has a value which is a string
@@ -755,6 +763,10 @@ genome_guid has a value which is a string
 a reference to a hash where the following keys are defined:
 feature_guid has a value which is a string
 feature_name has a value which is a string
+feature_aliases has a value which is a reference to a list where each element is a string
+feature_function has a value which is a string
+with_expression has a value which is an int
+with_fitness has a value which is an int
 distance has a value which is a float
 reference_term_name has a value which is a string
 reference_term_guid has a value which is a string
@@ -770,6 +782,10 @@ kbase_term_guid has a value which is a string
 a reference to a hash where the following keys are defined:
 feature_guid has a value which is a string
 feature_name has a value which is a string
+feature_aliases has a value which is a reference to a list where each element is a string
+feature_function has a value which is a string
+with_expression has a value which is an int
+with_fitness has a value which is an int
 distance has a value which is a float
 reference_term_name has a value which is a string
 reference_term_guid has a value which is a string

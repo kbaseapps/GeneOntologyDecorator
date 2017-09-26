@@ -74,10 +74,12 @@ class GeneOntologyDecorator(object):
            parameter "genome_ref" of String, parameter "genome_guid" of String
         :returns: instance of list of type "FeatureOntologyPrediction" ->
            structure: parameter "feature_guid" of String, parameter
-           "feature_name" of String, parameter "distance" of Double,
-           parameter "reference_term_name" of String, parameter
-           "reference_term_guid" of String, parameter "kbase_term_name" of
-           String, parameter "kbase_term_guid" of String
+           "feature_name" of String, parameter "feature_aliases" of list of
+           String, parameter "feature_function" of String, parameter
+           "with_expression" of Long, parameter "with_fitness" of Long,
+           parameter "distance" of Double, parameter "reference_term_name" of
+           String, parameter "reference_term_guid" of String, parameter
+           "kbase_term_name" of String, parameter "kbase_term_guid" of String
         """
         return self._client.call_method(
             'GeneOntologyDecorator.listFeatures',
