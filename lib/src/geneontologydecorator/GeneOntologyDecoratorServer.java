@@ -23,8 +23,8 @@ import java.net.URL;
 public class GeneOntologyDecoratorServer extends JsonServerServlet {
     private static final long serialVersionUID = 1L;
     private static final String version = "0.0.1";
-    private static final String gitUrl = "https://github.com/psnovichkov/GeneOntologyDecorator.git";
-    private static final String gitCommitHash = "054b74f6b648317bd4c7421e8436475538775cf6";
+    private static final String gitUrl = "https://github.com/rsutormin/GeneOntologyDecorator";
+    private static final String gitCommitHash = "b9ef19ec21874dafdb7ef947e283e59d71f5fe1c";
 
     //BEGIN_CLASS_HEADER
     IGeneOntologyDecoratorImpl impl = null;  //new FakeGeneOntologyDecoratorServer();

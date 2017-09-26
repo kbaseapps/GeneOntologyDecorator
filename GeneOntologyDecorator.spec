@@ -44,6 +44,10 @@ module GeneOntologyDecorator {
     typedef structure{
     	string feature_guid;
     	string feature_name;
+    	list<string> feature_aliases;
+    	string feature_function;
+    	int with_expression;
+    	int with_fitness;
     	float distance;
     	string reference_term_name;
     	string reference_term_guid;
